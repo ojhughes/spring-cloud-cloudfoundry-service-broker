@@ -15,11 +15,11 @@ public class ServiceInstanceFixture {
 	public static CreateServiceInstanceRequest buildCreateServiceInstanceRequest(boolean acceptsIncomplete) {
 		ServiceDefinition service = ServiceFixture.getSimpleService();
 		return new CreateServiceInstanceRequest(
+				ParametersFixture.getParameters(),
 				service.getId(),
 				service.getPlans().get(0).getId(),
 				DataFixture.getOrgOneGuid(),
-				DataFixture.getSpaceOneGuid(),
-				ParametersFixture.getParameters())
+				DataFixture.getSpaceOneGuid())
 				.withServiceInstanceId("service-instance-id")
 				.withAsyncAccepted(acceptsIncomplete);
 	}

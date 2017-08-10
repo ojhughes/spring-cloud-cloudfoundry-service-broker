@@ -46,6 +46,13 @@ public class UpdateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 	private final PreviousValues previousValues;
 
 	/**
+	 * Vendor specific fields for request. In future will subsume space_id and organization_id
+	 */
+	@JsonSerialize
+	@JsonProperty("context")
+	private final ServiceInstanceRequestContext context;
+
+	/**
 	 * The Cloud Controller GUID of the service instance to update.
 	 */
 	@JsonIgnore
@@ -63,6 +70,7 @@ public class UpdateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 		this.serviceDefinitionId = null;
 		this.planId = null;
 		this.previousValues = null;
+		this.context = new ServiceInstanceRequestContext();
 	}
 
 	public UpdateServiceInstanceRequest(String serviceDefinitionId, String planId,
@@ -71,15 +79,33 @@ public class UpdateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 		this.serviceDefinitionId = serviceDefinitionId;
 		this.planId = planId;
 		this.previousValues = previousValues;
+		this.context = new ServiceInstanceRequestContext();
 	}
 
-	public UpdateServiceInstanceRequest(String serviceDefinitionId, String planId,
-										Map<String, Object> parameters) {
+	public UpdateServiceInstanceRequest(Map<String, Object> parameters, String serviceDefinitionId, String planId,
+										PreviousValues previousValues, ServiceInstanceRequestContext context) {
+		super(parameters);
+		this.serviceDefinitionId = serviceDefinitionId;
+		this.planId = planId;
+		this.previousValues = previousValues;
+		this.context = context;
+	}
+
+	public UpdateServiceInstanceRequest(Map<String, Object> parameters, String serviceDefinitionId, String planId) {
 		this(serviceDefinitionId, planId, parameters, null);
 	}
 
 	public UpdateServiceInstanceRequest(String serviceDefinitionId, String planId) {
-		this(serviceDefinitionId, planId, null);
+		this(serviceDefinitionId, planId, new ServiceInstanceRequestContext());
+	}
+
+	public UpdateServiceInstanceRequest(String serviceDefinitionId, String planId, ServiceInstanceRequestContext context) {
+		this(null, serviceDefinitionId, planId, null, context);
+	}
+
+	public UpdateServiceInstanceRequest(String serviceDefinitionId, String planId, PreviousValues previousValues,
+										ServiceInstanceRequestContext context) {
+		this(null, serviceDefinitionId, planId, previousValues, context);
 	}
 
 	public UpdateServiceInstanceRequest withServiceInstanceId(String serviceInstanceId) {

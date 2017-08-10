@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Details of a request to create a new service instance.
- * 
+ *
  * @author sgreenberg@pivotal.io
  * @author Scott Frederick
  */
@@ -56,6 +56,13 @@ public class CreateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 	private final String spaceGuid;
 
 	/**
+	 * Vendor specific fields for request. In future will subsume space_id and organization_id
+	 */
+	@JsonSerialize
+	@JsonProperty("context")
+	private final ServiceInstanceRequestContext context;
+
+	/**
 	 * The Cloud Controller GUID of the service instance to provision. This ID will be used for future
 	 * requests for the same service instance (e.g. bind and deprovision), so the broker must use it to
 	 * correlate any resource it creates.
@@ -76,21 +83,39 @@ public class CreateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 		this.planId = null;
 		this.organizationGuid = null;
 		this.spaceGuid = null;
+		this.context = new ServiceInstanceRequestContext();
 	}
-	
-	public CreateServiceInstanceRequest(String serviceDefinitionId, String planId,
-										String organizationGuid, String spaceGuid,
-										Map<String, Object> parameters) {
+
+	public CreateServiceInstanceRequest(Map<String, Object> parameters, String serviceDefinitionId, String planId,
+										String organizationGuid, String spaceGuid) {
 		super(parameters);
 		this.serviceDefinitionId = serviceDefinitionId;
 		this.planId = planId;
 		this.organizationGuid = organizationGuid;
 		this.spaceGuid = spaceGuid;
+		this.context = new ServiceInstanceRequestContext();
+	}
+
+	public CreateServiceInstanceRequest(Map<String, Object> parameters, String serviceDefinitionId,
+										String planId, String organizationGuid, String spaceGuid,
+										ServiceInstanceRequestContext context) {
+		super(parameters);
+		this.serviceDefinitionId = serviceDefinitionId;
+		this.planId = planId;
+		this.organizationGuid = organizationGuid;
+		this.spaceGuid = spaceGuid;
+		this.context = context;
 	}
 
 	public CreateServiceInstanceRequest(String serviceDefinitionId, String planId,
 										String organizationGuid, String spaceGuid) {
-		this(serviceDefinitionId, planId, organizationGuid, spaceGuid, null);
+		this(null, serviceDefinitionId, planId, organizationGuid, spaceGuid);
+	}
+
+	public CreateServiceInstanceRequest(String serviceDefinitionId, String planId,
+										String organizationGuid, String spaceGuid,
+										ServiceInstanceRequestContext context) {
+		this(null, serviceDefinitionId, planId, organizationGuid, spaceGuid, context);
 	}
 
 	public CreateServiceInstanceRequest withServiceDefinition(ServiceDefinition serviceDefinition) {
@@ -117,4 +142,5 @@ public class CreateServiceInstanceRequest extends AsyncParameterizedServiceInsta
 		this.apiInfoLocation = apiInfoLocation;
 		return this;
 	}
+
 }
